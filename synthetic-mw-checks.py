@@ -39,7 +39,7 @@ class automated_tests:
         self.mingle_username = mingle_username
         self.mingle_password = mingle_password
         self.email_list = email_list
-        self.workingdir= workingdir
+        self.workingdir = workingdir
         # self.test_prefix = test_prefix
         self.artifacts_directory = os.path.join(os.getcwd(), f'artifacts')
         os.makedirs(self.artifacts_directory, exist_ok=True)
@@ -115,7 +115,6 @@ class automated_tests:
         except Exception as e:
             logging.error(f"Failed to initialize Chrome driver: {e}")
             raise e
-
     def set_element_text(self, text, element_filter, clear=True):
         wait = WebDriverWait(self.driver, 60)
         element = wait.until(EC.element_to_be_clickable(element_filter))
@@ -124,7 +123,6 @@ class automated_tests:
             element.clear()
         ActionChains(self.driver).move_to_element(element).click(element).send_keys_to_element(element, text).perform()
         return element
-
 
     def click_with_retries(self, element_filter, retries=3, wait=15, requires_move=False, refresh_page_on_retry=False):
         wait = WebDriverWait(self.driver, wait)
@@ -163,8 +161,6 @@ class automated_tests:
             return True
         except:
             return False
-
-    
 
     def print_job_details(self, job_type_text, job_element):
         logging.info(f"> {job_type_text}:")
@@ -235,8 +231,6 @@ class automated_tests:
             # self.save_screenshot("mingle-login-error.png")
             logging.error("ERROR - MINGLE Login Failed")
             raise e
-
-    
     def get_version(self):
         try:
             logging.info("Capturing site version... ")
@@ -257,7 +251,6 @@ class automated_tests:
             # self.save_screenshot("get-site-version-error.png")
             logging.error("ERROR - Get Version Failed")
             raise e
-
 
     def execute_tests(self):
         try:
@@ -317,7 +310,25 @@ def main():
         ]
     )
 
+    # Log system information for debugging
+    logging.info(f"Python version: {sys.version}")
+    logging.info(f"Platform: {platform.platform()}")
+    logging.info(f"Working directory: {working_dir}")
     
+    # Verify Chrome components exist
+    chromedriver_path = os.path.join(working_dir, 'chromedriver')
+    chrome_binary_path = os.path.join(working_dir, 'chrome-linux', 'chrome')
+    
+    logging.info(f"Checking ChromeDriver at: {chromedriver_path}")
+    logging.info(f"ChromeDriver exists: {os.path.exists(chromedriver_path)}")
+    
+    logging.info(f"Checking Chrome binary at: {chrome_binary_path}")
+    logging.info(f"Chrome binary exists: {os.path.exists(chrome_binary_path)}")
+    
+    if os.path.exists(os.path.join(working_dir, 'chrome-linux')):
+        chrome_dir_contents = os.listdir(os.path.join(working_dir, 'chrome-linux'))
+        logging.info(f"Chrome directory contents: {chrome_dir_contents}")
+
     secret_name = 'birst/synthetic_monitoring/nextdev_login'
     region_name = 'us-west-1'
     url, username, password, mingle_url, mingle_username, mingle_password, email_list = load_credential_from_secrets_manager(secret_name, region_name)
